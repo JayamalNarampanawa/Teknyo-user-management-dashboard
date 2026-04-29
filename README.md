@@ -2,6 +2,10 @@
 
 A polished, responsive React dashboard built for the Teknyo internship practical assessment. The app integrates a live API, supports search and pagination, and includes a responsive layout with modal-based user details and dark mode.
 
+# Live Demo
+
+Live Demo: https://usermanagementdashboard-teknyo.netlify.app/users
+
 ## Features
 
 - Responsive dashboard layout with sidebar navigation
