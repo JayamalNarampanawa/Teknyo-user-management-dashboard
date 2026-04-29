@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useReducer, useState } from 'react';
-import ErrorState from '../components/ErrorState';
-import LoadingState from '../components/LoadingState';
-import Pagination from '../components/Pagination';
-import SearchBar from '../components/SearchBar';
-import UserModal from '../components/UserModal';
+import ErrorState from "../components/ErrorState";
+import LoadingState from "../components/LoadingState";
+import Pagination from "../components/Pagination";
+import SearchBar from "../components/SearchBar";
+import UserModal from "../components/UserModal";
 import UserTable from '../components/UserTable';
 import { getUsers } from '../services/userService';
 
