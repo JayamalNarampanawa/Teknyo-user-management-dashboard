@@ -67,10 +67,6 @@ src/
   main.jsx
 ```
 
-## AI Tools Used
-
-- ChatGPT for planning, UI guidance, and code support
-- GitHub Copilot for code completion and development assistance
 
 ## Submission Note
 
