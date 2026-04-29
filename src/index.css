@@ -43,3 +43,14 @@ html.dark body {
 ::selection {
 	background: rgba(59, 130, 246, 0.22);
 }
+
+@keyframes loadingBar {
+	0%,
+	100% {
+		transform: translateX(-14%);
+	}
+
+	50% {
+		transform: translateX(42%);
+	}
+}
