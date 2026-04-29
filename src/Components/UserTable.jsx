@@ -1,6 +1,7 @@
 const UserTable = ({ users, onViewUser }) => {
   return (
     <div>
+      {/* Desktop users get a compact table, while mobile users get stacked cards. */}
       <div className="hidden overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950 md:block">
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
@@ -37,11 +38,12 @@ const UserTable = ({ users, onViewUser }) => {
         </div>
       </div>
 
+      {/* The mobile layout keeps the same information readable on narrow screens. */}
       <div className="grid gap-4 md:hidden">
         {users.map((user) => (
           <article
             key={user.id}
-            className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+            className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -61,11 +63,11 @@ const UserTable = ({ users, onViewUser }) => {
             <dl className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-300">
               <div className="rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-900/70">
                 <dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Email</dt>
-                <dd className="mt-1 break-words">{user.email}</dd>
+                <dd className="mt-1 wrap-break-word">{user.email}</dd>
               </div>
               <div className="rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-900/70">
                 <dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Phone</dt>
-                <dd className="mt-1 break-words">{user.phone}</dd>
+                <dd className="mt-1 wrap-break-word">{user.phone}</dd>
               </div>
             </dl>
           </article>

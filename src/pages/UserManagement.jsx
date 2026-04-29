@@ -10,6 +10,7 @@ import { getUsers } from '../services/userService';
 const PAGE_SIZE = 5;
 
 const usersReducer = (state, action) => {
+  // Keep the loading, success, and error states together so the page stays easy to follow.
   switch (action.type) {
     case 'success':
       return {
@@ -39,6 +40,7 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
+    // Guard against setting state after unmount if the request finishes late.
     let isMounted = true;
 
     void getUsers()
@@ -62,6 +64,7 @@ const UserManagement = () => {
   }, []);
 
   const handleSearchChange = (value) => {
+    // Reset paging whenever the filter changes so results always start from the first match.
     setSearchTerm(value);
     setCurrentPage(1);
   };
@@ -73,6 +76,7 @@ const UserManagement = () => {
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+  // Clamp the page number so the UI does not drift past the last available page.
   const safeCurrentPage = Math.min(currentPage, totalPages);
   const paginatedUsers = filteredUsers.slice(
     (safeCurrentPage - 1) * PAGE_SIZE,

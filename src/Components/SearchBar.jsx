@@ -1,5 +1,6 @@
 const SearchBar = ({ value, onChange, placeholder }) => {
   return (
+    // The search field stays minimal so the user can focus on the name filter.
     <label className="relative block">
       <span className="sr-only">Search users</span>
       <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400 dark:text-slate-500">

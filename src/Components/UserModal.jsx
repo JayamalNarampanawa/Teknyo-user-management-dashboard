@@ -5,6 +5,7 @@ const UserModal = ({ user, onClose }) => {
     if (!user) return undefined;
 
     const handleEscape = (event) => {
+      // Let users close the dialog quickly with the Escape key.
       if (event.key === 'Escape') {
         onClose();
       }
@@ -23,8 +24,9 @@ const UserModal = ({ user, onClose }) => {
       onClick={onClose}
       role="presentation"
     >
+      {/* Clicking the overlay closes the modal, while clicks inside stay in place. */}
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-white/10 bg-white p-6 shadow-2xl shadow-slate-950/40 dark:border-slate-700 dark:bg-slate-950 sm:p-8"
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-4xl border border-white/10 bg-white p-6 shadow-2xl shadow-slate-950/40 dark:border-slate-700 dark:bg-slate-950 sm:p-8"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -73,6 +75,7 @@ const UserModal = ({ user, onClose }) => {
 };
 
 const InfoCard = ({ label, value, fullWidth = false }) => (
+  // Small cards keep each detail easy to scan without overwhelming the modal.
   <div
     className={`rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900 ${
       fullWidth ? 'sm:col-span-2' : ''

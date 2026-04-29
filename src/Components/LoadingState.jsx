@@ -1,4 +1,5 @@
 const LoadingState = () => {
+  // Reuse the same placeholder shapes so the loading view feels like the real page structure.
   const skeletons = Array.from({ length: 5 }, (_, index) => index);
 
   return (

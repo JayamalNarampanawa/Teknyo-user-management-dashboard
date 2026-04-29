@@ -4,6 +4,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Restore the last theme choice first, then fall back to the device preference.
     const savedTheme = window.localStorage.getItem('theme');
     if (savedTheme) {
       return savedTheme === 'dark';
@@ -18,6 +19,7 @@ const DashboardLayout = () => {
   }, [isDarkMode]);
 
   const toggleTheme = () => {
+    // Update local storage and the document class together so the theme change feels immediate.
     setIsDarkMode((current) => {
       const nextTheme = !current;
       window.localStorage.setItem('theme', nextTheme ? 'dark' : 'light');
@@ -37,6 +39,7 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen text-slate-900 dark:text-slate-100">
       <div className="flex min-h-screen">
+        {/* Mobile sidebar stays off-canvas until the user opens it. */}
         <aside
           className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-white/10 bg-slate-950/95 px-5 py-6 text-white shadow-2xl shadow-slate-950/40 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -77,6 +80,7 @@ const DashboardLayout = () => {
           </div>
         </aside>
 
+        {/* Dark overlay closes the drawer when the user clicks outside it. */}
         <div
           className={`fixed inset-0 z-30 bg-slate-950/60 transition-opacity lg:hidden ${
             sidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
@@ -86,6 +90,7 @@ const DashboardLayout = () => {
         />
 
         <div className="flex min-h-screen flex-1 flex-col lg:pl-72">
+          {/* The header keeps the main controls visible while the content scrolls. */}
           <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/70">
             <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
@@ -118,6 +123,7 @@ const DashboardLayout = () => {
           </header>
 
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+            {/* Routed page content renders here inside the shared dashboard shell. */}
             <Outlet />
           </main>
         </div>

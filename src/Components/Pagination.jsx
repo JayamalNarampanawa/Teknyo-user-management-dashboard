@@ -5,6 +5,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   const pageNumbers = [];
   const visibleCount = 5;
+  // Center the visible page window around the active page whenever possible.
   const startPage = Math.max(1, currentPage - Math.floor(visibleCount / 2));
   const endPage = Math.min(totalPages, startPage + visibleCount - 1);
   const adjustedStart = Math.max(1, endPage - visibleCount + 1);
@@ -15,7 +16,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <nav
-      className="flex flex-col items-center justify-between gap-3 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70 sm:flex-row"
+      className="flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70 sm:flex-row"
       aria-label="Pagination"
     >
       <p className="text-sm text-slate-500 dark:text-slate-400">
