@@ -72,11 +72,10 @@ const PageChip = ({ page, active, onPageChange }) => (
   <button
     type="button"
     onClick={() => onPageChange(page)}
-    className={`min-w-11 rounded-full px-4 py-2 text-sm font-semibold transition ${
-      active
+    className={`min-w-11 rounded-full px-4 py-2 text-sm font-semibold transition ${active
         ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
         : 'border border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200'
-    }`}
+      }`}
     aria-current={active ? 'page' : undefined}
   >
     {page}

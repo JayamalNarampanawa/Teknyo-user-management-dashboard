@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://jsonplaceholder.typicode.com/users';
+const API_URL = "https://jsonplaceholder.typicode.com/users";
 
 export const getUsers = async () => {
   try {
@@ -13,8 +13,10 @@ export const getUsers = async () => {
   } catch (error) {
     // Re-throw a friendlier message so the UI can explain the failure clearly.
     throw new Error(
-      error instanceof Error ? error.message : 'Unable to fetch users right now.',
-      { cause: error }
+      error instanceof Error
+        ? error.message
+        : "Unable to fetch users right now.",
+      { cause: error },
     );
   }
 };

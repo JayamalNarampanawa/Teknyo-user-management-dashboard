@@ -41,9 +41,8 @@ const DashboardLayout = () => {
       <div className="flex min-h-screen">
         {/* Mobile sidebar stays off-canvas until the user opens it. */}
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-white/10 bg-slate-950/95 px-5 py-6 text-white shadow-2xl shadow-slate-950/40 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+          className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-white/10 bg-slate-950/95 px-5 py-6 text-white shadow-2xl shadow-slate-950/40 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
         >
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -82,9 +81,8 @@ const DashboardLayout = () => {
 
         {/* Dark overlay closes the drawer when the user clicks outside it. */}
         <div
-          className={`fixed inset-0 z-30 bg-slate-950/60 transition-opacity lg:hidden ${
-            sidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-          }`}
+          className={`fixed inset-0 z-30 bg-slate-950/60 transition-opacity lg:hidden ${sidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+            }`}
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />

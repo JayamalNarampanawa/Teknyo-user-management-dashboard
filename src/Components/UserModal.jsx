@@ -77,9 +77,8 @@ const UserModal = ({ user, onClose }) => {
 const InfoCard = ({ label, value, fullWidth = false }) => (
   // Small cards keep each detail easy to scan without overwhelming the modal.
   <div
-    className={`rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900 ${
-      fullWidth ? 'sm:col-span-2' : ''
-    }`}
+    className={`rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900 ${fullWidth ? 'sm:col-span-2' : ''
+      }`}
   >
     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
       {label}
