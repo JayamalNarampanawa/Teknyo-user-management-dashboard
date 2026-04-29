@@ -70,7 +70,10 @@ src/
   index.css
   main.jsx
 ```
+## AI Tools Used
 
+- ChatGPT – for architecture planning, UI/UX improvements, and debugging guidance
+- GitHub Copilot – for code completion and development acceleration
 
 ## Submission Note
 
