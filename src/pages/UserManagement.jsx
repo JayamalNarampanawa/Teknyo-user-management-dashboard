@@ -52,8 +52,12 @@ const UserManagement = () => {
   const loadUsers = async () => {
     dispatch({ type: 'loading' });
 
+    const minLoadingDuration = new Promise((resolve) => {
+      window.setTimeout(resolve, 3500);
+    });
+
     try {
-      const data = await getUsers();
+      const [data] = await Promise.all([getUsers(), minLoadingDuration]);
 
       if (isMountedRef.current) {
         dispatch({ type: 'success', payload: data });
