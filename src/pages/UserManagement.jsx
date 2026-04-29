@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 //Importing Components
 import ErrorState from "../Components/ErrorState";
 import LoadingState from "../Components/LoadingState";
@@ -13,6 +13,12 @@ const PAGE_SIZE = 5;
 const usersReducer = (state, action) => {
   // Keep the loading, success, and error states together so the page stays easy to follow.
   switch (action.type) {
+    case 'loading':
+      return {
+        ...state,
+        loading: true,
+        error: '',
+      };
     case 'success':
       return {
         users: action.payload,
@@ -36,37 +42,52 @@ const UserManagement = () => {
     loading: true,
     error: '',
   });
+  const isMountedRef = useRef(false);
+  const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortDirection, setSortDirection] = useState('asc');
   const [selectedUser, setSelectedUser] = useState(null);
 
-  useEffect(() => {
-    // Guard against setting state after unmount if the request finishes late.
-    let isMounted = true;
+  const loadUsers = async () => {
+    dispatch({ type: 'loading' });
 
-    void getUsers()
-      .then((data) => {
-        if (isMounted) {
-          dispatch({ type: 'success', payload: data });
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          dispatch({
-            type: 'error',
-            payload: err instanceof Error ? err.message : 'Failed to load users. Please try again.',
-          });
-        }
-      });
+    try {
+      const data = await getUsers();
+
+      if (isMountedRef.current) {
+        dispatch({ type: 'success', payload: data });
+      }
+    } catch (err) {
+      if (isMountedRef.current) {
+        dispatch({
+          type: 'error',
+          payload: err instanceof Error ? err.message : 'Failed to load users. Please try again.',
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    void loadUsers();
 
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
   }, []);
 
+  useEffect(() => {
+    const debounceId = window.setTimeout(() => {
+      setSearchTerm(searchInput);
+    }, 250);
+
+    return () => window.clearTimeout(debounceId);
+  }, [searchInput]);
+
   const handleSearchChange = (value) => {
     // Reset paging whenever the filter changes so results always start from the first match.
-    setSearchTerm(value);
+    setSearchInput(value);
     setCurrentPage(1);
   };
 
@@ -76,18 +97,33 @@ const UserManagement = () => {
     [searchTerm, users]
   );
 
-  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+  const sortedUsers = useMemo(() => {
+    return [...filteredUsers].sort((leftUser, rightUser) => {
+      const comparison = leftUser.name.localeCompare(rightUser.name, undefined, {
+        sensitivity: 'base',
+      });
+
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [filteredUsers, sortDirection]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedUsers.length / PAGE_SIZE));
   // Clamp the page number so the UI does not drift past the last available page.
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedUsers = filteredUsers.slice(
+  const paginatedUsers = sortedUsers.slice(
     (safeCurrentPage - 1) * PAGE_SIZE,
     safeCurrentPage * PAGE_SIZE
   );
 
-  const displayedCount = filteredUsers.length;
+  const displayedCount = sortedUsers.length;
   const totalUsers = users.length;
   const visibleStart = displayedCount === 0 ? 0 : (safeCurrentPage - 1) * PAGE_SIZE + 1;
   const visibleEnd = Math.min(safeCurrentPage * PAGE_SIZE, displayedCount);
+
+  const toggleSort = () => {
+    setCurrentPage(1);
+    setSortDirection((currentDirection) => (currentDirection === 'asc' ? 'desc' : 'asc'));
+  };
 
   return (
     <div className="space-y-6">
@@ -136,7 +172,7 @@ const UserManagement = () => {
 
         <div className="mt-8 max-w-xl">
           <SearchBar
-            value={searchTerm}
+            value={searchInput}
             onChange={handleSearchChange}
             placeholder="Search users by name..."
           />
@@ -149,28 +185,17 @@ const UserManagement = () => {
         ) : error ? (
           <ErrorState
             message={error}
-            onRetry={() => {
-              dispatch({ type: 'success', payload: [] });
-              void getUsers()
-                .then((data) => dispatch({ type: 'success', payload: data }))
-                .catch((err) =>
-                  dispatch({
-                    type: 'error',
-                    payload:
-                      err instanceof Error ? err.message : 'Failed to load users. Please try again.',
-                  })
-                );
-            }}
+            onRetry={loadUsers}
           />
-        ) : filteredUsers.length === 0 ? (
-          <div className="flex min-h-88 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/40">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/10 text-2xl text-blue-600 dark:text-blue-300">
-              ↯
+        ) : sortedUsers.length === 0 ? (
+          <div className="flex min-h-88 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900/40 sm:px-10">
+            <div className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-blue-500/10 text-3xl text-blue-600 dark:text-blue-300">
+              ◌
             </div>
-            <h2 className="mt-5 text-xl font-semibold text-slate-950 dark:text-white">
+            <h2 className="mt-6 text-xl font-semibold tracking-tight text-slate-950 dark:text-white">
               No users found
             </h2>
-            <p className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
+            <p className="mt-3 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
               Try a different search term or clear the filter to restore the full list.
             </p>
           </div>
@@ -180,10 +205,23 @@ const UserManagement = () => {
               <p>
                 Showing {visibleStart}-{visibleEnd} of {displayedCount} results
               </p>
-              <p>Page {safeCurrentPage}</p>
+              <button
+                type="button"
+                onClick={toggleSort}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:text-blue-300"
+                aria-label={`Sort users by name ${sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+              >
+                Name {sortDirection === 'asc' ? 'A-Z' : 'Z-A'}
+                <span aria-hidden="true">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              </button>
             </div>
 
-            <UserTable users={paginatedUsers} onViewUser={setSelectedUser} />
+            <UserTable
+              users={paginatedUsers}
+              onViewUser={setSelectedUser}
+              sortDirection={sortDirection}
+              onSortName={toggleSort}
+            />
 
             <Pagination
               currentPage={safeCurrentPage}

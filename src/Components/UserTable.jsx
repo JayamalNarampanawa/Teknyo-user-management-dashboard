@@ -1,4 +1,4 @@
-const UserTable = ({ users, onViewUser }) => {
+const UserTable = ({ users, onViewUser, sortDirection, onSortName }) => {
   return (
     <div>
       {/* Desktop users get a compact table, while mobile users get stacked cards. */}
@@ -7,7 +7,17 @@ const UserTable = ({ users, onViewUser }) => {
           <table className="min-w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-600 dark:bg-slate-900 dark:text-slate-300">
               <tr>
-                <th className="px-5 py-4 font-semibold">Name</th>
+                <th className="px-5 py-4 font-semibold">
+                  <button
+                    type="button"
+                    onClick={onSortName}
+                    className="inline-flex items-center gap-2 rounded-full px-2 py-1 font-semibold transition hover:bg-slate-200/70 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                    aria-label={`Sort users by name ${sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+                  >
+                    <span>Name</span>
+                    <span aria-hidden="true">{sortDirection === 'asc' ? 'A-Z' : 'Z-A'}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-4 font-semibold">Email</th>
                 <th className="px-5 py-4 font-semibold">Phone</th>
                 <th className="px-5 py-4 font-semibold">Company</th>
@@ -17,9 +27,22 @@ const UserTable = ({ users, onViewUser }) => {
 
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {users.map((user) => (
-                <tr key={user.id} className="transition hover:bg-slate-50/90 dark:hover:bg-slate-900/70">
-                  <td className="px-5 py-4 font-medium text-slate-950 dark:text-white">{user.name}</td>
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{user.email}</td>
+                <tr
+                  key={user.id}
+                  className="group transition hover:bg-slate-50/90 focus-within:bg-slate-50/90 dark:hover:bg-slate-900/70 dark:focus-within:bg-slate-900/70"
+                >
+                  <td className="px-5 py-4 font-medium text-slate-950 transition group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-300">
+                    {user.name}
+                  </td>
+                  <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
+                    <a
+                      href={`mailto:${user.email}`}
+                      className="break-all transition hover:text-blue-600 hover:underline dark:hover:text-blue-300"
+                      aria-label={`Email ${user.name}`}
+                    >
+                      {user.email}
+                    </a>
+                  </td>
                   <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{user.phone}</td>
                   <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{user.company.name}</td>
                   <td className="px-5 py-4">
@@ -27,6 +50,7 @@ const UserTable = ({ users, onViewUser }) => {
                       type="button"
                       onClick={() => onViewUser(user)}
                       className="rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:bg-blue-600 dark:bg-white dark:text-slate-950 dark:hover:bg-blue-200"
+                      aria-label={`View details for ${user.name}`}
                     >
                       View
                     </button>
@@ -55,6 +79,7 @@ const UserTable = ({ users, onViewUser }) => {
                 type="button"
                 onClick={() => onViewUser(user)}
                 className="rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-600 dark:bg-white dark:text-slate-950"
+                aria-label={`View details for ${user.name}`}
               >
                 View
               </button>
@@ -63,7 +88,15 @@ const UserTable = ({ users, onViewUser }) => {
             <dl className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-300">
               <div className="rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-900/70">
                 <dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Email</dt>
-                <dd className="mt-1 wrap-break-word">{user.email}</dd>
+                <dd className="mt-1 wrap-break-word">
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="transition hover:text-blue-600 hover:underline dark:hover:text-blue-300"
+                    aria-label={`Email ${user.name}`}
+                  >
+                    {user.email}
+                  </a>
+                </dd>
               </div>
               <div className="rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-900/70">
                 <dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Phone</dt>

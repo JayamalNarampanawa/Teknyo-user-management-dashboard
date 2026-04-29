@@ -1,19 +1,79 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const UserModal = ({ user, onClose }) => {
+  const dialogRef = useRef(null);
+  const previouslyFocusedElementRef = useRef(null);
+
   useEffect(() => {
     if (!user) return undefined;
 
-    const handleEscape = (event) => {
+    previouslyFocusedElementRef.current = document.activeElement;
+
+    const focusableSelector =
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const focusDialog = () => {
+      const dialog = dialogRef.current;
+      if (!dialog) {
+        return;
+      }
+
+      const focusableElements = Array.from(dialog.querySelectorAll(focusableSelector));
+      const firstFocusableElement = focusableElements[0] || dialog;
+      firstFocusableElement.focus();
+    };
+
+    const handleKeyDown = (event) => {
       // Let users close the dialog quickly with the Escape key.
       if (event.key === 'Escape') {
+        event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const dialog = dialogRef.current;
+      if (!dialog) {
+        return;
+      }
+
+      const focusableElements = Array.from(dialog.querySelectorAll(focusableSelector)).filter(
+        (element) => !element.hasAttribute('disabled')
+      );
+
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstFocusableElement) {
+        event.preventDefault();
+        lastFocusableElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusableElement) {
+        event.preventDefault();
+        firstFocusableElement.focus();
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
+    window.addEventListener('keydown', handleKeyDown);
 
-    return () => window.removeEventListener('keydown', handleEscape);
+    window.setTimeout(focusDialog, 0);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+
+      const previouslyFocusedElement = previouslyFocusedElementRef.current;
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        previouslyFocusedElement.focus();
+      }
+    };
   }, [onClose, user]);
 
   if (!user) return null;
@@ -31,6 +91,8 @@ const UserModal = ({ user, onClose }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby={`user-modal-${user.id}`}
+        tabIndex={-1}
+        ref={dialogRef}
       >
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -113,6 +113,7 @@ const DashboardLayout = () => {
                 type="button"
                 onClick={toggleTheme}
                 className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               >
                 <span>{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
                 <span className="text-base">{isDarkMode ? '☀' : '☾'}</span>
